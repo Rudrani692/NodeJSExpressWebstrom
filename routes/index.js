@@ -4,7 +4,7 @@ var router = express.Router();
 //**************************************************************************
 //***** mongodb get all of the Routes in Routes collection where frequence>=1
 //      and sort by the name of the route.  Render information in the views/pages/mongodb.ejs
-router.get('/mongodb', function (request, response) {
+router.get('/mongodb', function (req, res, next) {
 
   mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
     if(err) throw err;
@@ -25,10 +25,11 @@ router.get('/mongodb', function (request, response) {
   });//end of connect
 });//end app.get
 
-/* GET home page. */
+/* GET home page.*/
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'CS at CSUEB' });
 });
+
 
 module.exports = router;
 
