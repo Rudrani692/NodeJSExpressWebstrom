@@ -1,17 +1,31 @@
 var express = require('express');
 var router = express.Router();
+var app = express.Router();
+var mongodb= require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://rudrani:Jyothi1420@ds227808.mlab.com:27808/heroku_b249c60f';
 
-//**************************************************************************
-//***** mongodb get all of the Routes in Routes collection where frequence>=1
+/* GET home page. */
+
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+module.exports = router;
+
+//**************************
+//*** mongodb get all of the Routes in Routes collection where frequence>=1
 //      and sort by the name of the route.  Render information in the views/pages/mongodb.ejs
-router.get('/mongodb', function (req, res, next) {
+router.get('/mongodb', function (request, response) {
 
-  mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, db) {
+  MongoClient.connect(url, function(err, db) {
+    console.log(db);
     if(err) throw err;
     //get collection of routes
-    var Routes = db.collection('Routes');
+    var Routes = db.db('heroku_b249c60f').collection('Routes');
+    console.log(Routes)
     //get all Routes with frequency >=1
-    Routes.find({ frequency : { $gte: 0 } }).sort({ name: 1 }).toArray(function (err, docs) {
+    Routes.find({ frequency : { $gte: '1' } }).sort({ name: 1 }).toArray(function (err, docs) {
       if(err) throw err;
 
       response.render('pages/mongodb', {results: docs});
@@ -24,12 +38,3 @@ router.get('/mongodb', function (req, res, next) {
     });
   });//end of connect
 });//end app.get
-
-/* GET home page.*/
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'CS at CSUEB' });
-});
-
-
-module.exports = router;
-
